@@ -19,14 +19,25 @@ Change the SERVER_PORT and CALLBACK_URL in run.sh
 
 We can now deploy the relevant artifacts
 
+```bash
+ansible-playbook -i workers master.yml --tags deploy
 ```
 
+Now start each service
 
+```bash
+ansible-playbook -i workers master.yml --tags start
 ```
 
-For the mirror to use this feature use the following cli (in v2 of oc-mirror)
+Each service can be stopped using the following command
 
-``` bash
+```bash
+ansible-playbook -i workers master.yml --tags stop
+```
+
+To mirror using this feature execute the following cli (in v2 of oc-mirror)
+
+```bash
 
 build/mirror --config isc.yaml file://test --loglevel trace --distributed-workers inventory
 
