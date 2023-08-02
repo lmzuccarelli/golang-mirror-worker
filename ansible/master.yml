@@ -1,0 +1,7 @@
+---
+# file: deploy.yml
+- hosts: all
+  vars_files:
+    - roles/manage/vars/main.yml
+  roles:
+    - manage

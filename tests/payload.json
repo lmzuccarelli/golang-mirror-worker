@@ -1,0 +1,70 @@
+[
+  {
+    "source": "docker://quay.io/luzuccar/alpine:3.17",
+    "destination": "docker://localhost:5000/ciccio/alpine:3.17"
+  },
+  {
+    "source": "docker://quay.io/luzuccar/alpine:3.17",
+    "destination": "docker://localhost:5000/ciccio/alpine:3.17"
+  },
+  {
+    "source": "docker://quay.io/luzuccar/alpine:3.17",
+    "destination": "docker://localhost:5000/ciccio/alpine:3.17"
+  },
+  {
+    "source": "docker://quay.io/luzuccar/alpine:3.17",
+    "destination": "docker://localhost:5000/ciccio/alpine:3.17"
+  },
+  {
+    "source": "docker://quay.io/luzuccar/alpine:3.17",
+    "destination": "docker://localhost:5000/ciccio/alpine:3.17"
+  },
+  {
+    "source": "docker://quay.io/luzuccar/alpine:3.17",
+    "destination": "docker://localhost:5000/ciccio/alpine:3.17"
+  },
+  {
+    "source": "docker://quay.io/luzuccar/alpine:3.17",
+    "destination": "docker://localhost:5000/ciccio/alpine:3.17"
+  },
+  {
+    "source": "docker://quay.io/luzuccar/alpine:3.17",
+    "destination": "docker://localhost:5000/ciccio/alpine:3.17"
+  },
+  {
+    "source": "docker://quay.io/luzuccar/alpine:3.17",
+    "destination": "docker://localhost:5000/ciccio/alpine:3.17"
+  },
+  {
+    "source": "docker://quay.io/luzuccar/alpine:3.17",
+    "destination": "docker://localhost:5000/ciccio/alpine:3.17"
+  },
+  {
+    "source": "docker://quay.io/luzuccar/alpine:3.17",
+    "destination": "docker://localhost:5000/ciccio/alpine:3.17"
+  },
+  {
+    "source": "docker://quay.io/luzuccar/alpine:3.17",
+    "destination": "docker://localhost:5000/ciccio/alpine:3.17"
+  },
+  {
+    "source": "docker://quay.io/luzuccar/alpine:3.17",
+    "destination": "docker://localhost:5000/ciccio/alpine:3.17"
+  },
+  {
+    "source": "docker://quay.io/luzuccar/alpine:3.17",
+    "destination": "docker://localhost:5000/ciccio/alpine:3.17"
+  },
+  {
+    "source": "docker://quay.io/luzuccar/alpine:3.17",
+    "destination": "docker://localhost:5000/ciccio/alpine:3.17"
+  },
+  {
+    "source": "docker://quay.io/luzuccar/alpine:3.17",
+    "destination": "docker://localhost:5000/ciccio/alpine:3.17"
+  },
+  {
+    "source": "docker://quay.io/luzuccar/alpine:3.17",
+    "destination": "docker://localhost:5000/ciccio/alpine:3.17"
+  }
+]

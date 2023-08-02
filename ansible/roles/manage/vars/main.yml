@@ -1,0 +1,5 @@
+ansible_user: lzuccarelli
+binary_file: /home/lzuccarelli/go/src/github.com/lmzuccarelli/golang-mirror-worker/build/mirror-worker
+scripts_file: /home/lzuccarelli/go/src/github.com/lmzuccarelli/golang-mirror-worker/run.sh
+auth_file: /home/lzuccarelli/.docker/config.json
+
