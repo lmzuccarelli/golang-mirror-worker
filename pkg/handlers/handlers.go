@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/lmzuccarelli/golang-mirror-worker/pkg/api/v1alpha3"
 	"github.com/lmzuccarelli/golang-mirror-worker/pkg/connectors"
@@ -118,7 +119,8 @@ func makePostRequest(generic *v1alpha3.GenericSchema, msg string, con connectors
 }
 
 func executeWorker(images []v1alpha3.CopyImageSchema, conn connectors.Clients) {
-	e := conn.Worker(images)
+	updatedList := checkImageOnDisk(images, conn)
+	e := conn.Worker(updatedList)
 	var result string
 	host, _ := os.Hostname()
 	if e != nil {
@@ -135,4 +137,29 @@ func executeWorker(images []v1alpha3.CopyImageSchema, conn connectors.Clients) {
 	}
 	os.Remove("semaphore.txt")
 	conn.Info("BatchPayloadHandler %s", string(res))
+}
+
+func checkImageOnDisk(images []v1alpha3.CopyImageSchema, conn connectors.Clients) []v1alpha3.CopyImageSchema {
+	var res []v1alpha3.CopyImageSchema
+	for index := range images {
+		conn.Debug("checking for directory %s", images[index].Destination)
+		i := strings.LastIndex(images[index].Destination, "/")
+		// ignore dir:// at beginning of the string
+		dir := images[index].Destination[5:i]
+		if _, err := os.Stat(dir); errors.Is(err, os.ErrNotExist) {
+			err = os.MkdirAll(dir, 0755)
+			if err != nil {
+				conn.Error("creating directory %s", dir)
+			}
+			res = append(res, images[index])
+		} else {
+			// check if we aleady have the image on disk
+			if _, err := os.Stat(images[index].Destination[5:]); errors.Is(err, os.ErrNotExist) {
+				res = append(res, images[index])
+			} else {
+				conn.Info("directory exists %s", images[index].Destination)
+			}
+		}
+	}
+	return res
 }

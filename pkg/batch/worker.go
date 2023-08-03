@@ -63,7 +63,7 @@ func (o *Batch) Worker(images []v1alpha3.CopyImageSchema) error {
 	o.Log.Info("images to mirror %d ", b.Items)
 	o.Log.Info("batch count %d ", b.Count)
 	o.Log.Info("batch concurrency %d ", BATCH_SIZE)
-	o.Log.Info("batch size %d ", b.BatchSize)
+	//o.Log.Info("batch size %d ", b.BatchSize)
 	o.Log.Info("remainder size %d ", b.Remainder)
 
 	f := make([]*os.File, b.Count)
@@ -81,6 +81,7 @@ func (o *Batch) Worker(images []v1alpha3.CopyImageSchema) error {
 			index := (i * b.BatchSize) + x
 			o.Log.Debug("source %s ", images[index].Source)
 			o.Log.Debug("destination %s ", images[index].Destination)
+
 			go func(src, dest string, opts *mirror.CopyOptions, writer bufio.Writer) {
 				defer wg.Done()
 				err := o.Mirror.Run(src, dest, "copy", opts, writer)

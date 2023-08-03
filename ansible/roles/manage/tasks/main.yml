@@ -48,7 +48,7 @@
     chdir: /home/{{ ansible_user }}/mirror-worker
   async: 30
   poll: 0
-    #register: display_start
+  register: display_start
   tags: start
 
 - name: out_start
@@ -66,10 +66,17 @@
 
 - name: out_stop
   debug: var=display_stop.stdout_lines
-  tags: stop
+  tags: none
 
 - name: remove oc-mirror worker directory
   ansible.builtin.file:
     state: absent
     path: /home/{{ ansible_user }}/mirror-worker
   tags: delete
+
+- name: clean nfs directory
+  shell: rm -rf $(find . -name dir-put* -execdir pwd \;)
+  args:
+    chdir: /home/{{ ansible_user }}/mnt/nfs
+  tags: clean
+    
