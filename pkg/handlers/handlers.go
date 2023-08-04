@@ -42,6 +42,7 @@ func BatchPayloadHandler(w http.ResponseWriter, r *http.Request, conn connectors
 		return
 	}
 
+	// avoid a panic if r.Body is nil
 	if r.Body == nil {
 		r.Body = io.NopCloser(bytes.NewBufferString(""))
 	}
@@ -118,6 +119,7 @@ func makePostRequest(generic *v1alpha3.GenericSchema, msg string, con connectors
 	return []byte("ko"), fmt.Errorf(strconv.Itoa(resp.StatusCode))
 }
 
+// executeWorker - call the batch worker and once comlpete or errors sends post to callback service
 func executeWorker(images []v1alpha3.CopyImageSchema, conn connectors.Clients) {
 	updatedList := checkImageOnDisk(images, conn)
 	e := conn.Worker(updatedList)
@@ -139,13 +141,14 @@ func executeWorker(images []v1alpha3.CopyImageSchema, conn connectors.Clients) {
 	conn.Info("BatchPayloadHandler %s", string(res))
 }
 
+// checkImagesOnDisk - used in the shared nfs mode
 func checkImageOnDisk(images []v1alpha3.CopyImageSchema, conn connectors.Clients) []v1alpha3.CopyImageSchema {
 	var res []v1alpha3.CopyImageSchema
 	for index := range images {
 		conn.Debug("checking for directory %s", images[index].Destination)
 		i := strings.LastIndex(images[index].Destination, "/")
 		// ignore dir:// at beginning of the string
-		dir := images[index].Destination[5:i]
+		dir := images[index].Destination[len("dir://")-1 : i]
 		if _, err := os.Stat(dir); errors.Is(err, os.ErrNotExist) {
 			err = os.MkdirAll(dir, 0755)
 			if err != nil {
@@ -154,7 +157,7 @@ func checkImageOnDisk(images []v1alpha3.CopyImageSchema, conn connectors.Clients
 			res = append(res, images[index])
 		} else {
 			// check if we aleady have the image on disk
-			if _, err := os.Stat(images[index].Destination[5:]); errors.Is(err, os.ErrNotExist) {
+			if _, err := os.Stat(images[index].Destination[len("dir://")-1:]); errors.Is(err, os.ErrNotExist) {
 				res = append(res, images[index])
 			} else {
 				conn.Info("directory exists %s", images[index].Destination)

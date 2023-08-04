@@ -23,12 +23,11 @@ func (errReader) Read(p []byte) (n int, err error) {
 func TestHandlers(t *testing.T) {
 
 	logger := &simple.Logger{Level: "trace"}
-
 	t.Run("IsAlive : should pass", func(t *testing.T) {
 		var STATUS int = 200
 		// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
 		rr := httptest.NewRecorder()
-		req, _ := http.NewRequest("GET", "/api/v2/sys/info/isalive", nil)
+		req, _ := http.NewRequest("GET", "/api/v2/isalive", nil)
 		connectors.NewTestConnectors("", STATUS)
 		handler := http.HandlerFunc(IsAlive)
 		handler.ServeHTTP(rr, req)
@@ -45,8 +44,8 @@ func TestHandlers(t *testing.T) {
 	})
 
 	t.Run("BatchPayloadHandler : should pass", func(t *testing.T) {
+		os.RemoveAll("semaphore.txt")
 		var STATUS int = 200
-
 		requestPayload, err := os.ReadFile("../../tests/payload.json")
 		if err != nil {
 			panic(err)
@@ -74,6 +73,7 @@ func TestHandlers(t *testing.T) {
 	})
 
 	t.Run("BatchPayloadHandler : should fail (nil body)", func(t *testing.T) {
+		os.RemoveAll("semaphore.txt")
 		var STATUS int = 500
 		// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
 		rr := httptest.NewRecorder()
@@ -98,7 +98,8 @@ func TestHandlers(t *testing.T) {
 	})
 
 	t.Run("BatchPayloadHandler : should fail (force read error)", func(t *testing.T) {
-		var STATUS int = 403
+		os.RemoveAll("semaphore.txt")
+		var STATUS int = 500
 		// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
 		rr := httptest.NewRecorder()
 		req, _ := http.NewRequest("POST", "/api/v1/batch", errReader(0))
@@ -122,8 +123,9 @@ func TestHandlers(t *testing.T) {
 	})
 
 	t.Run("BatchPayloadHandler : should fail (forced http error)", func(t *testing.T) {
+		os.RemoveAll("semaphore.txt")
 		var STATUS int = 500
-		requestPayload := `{"email":"abc.xyz.com", "event":"test-this","subject": "test", "title": "Test title", "text" : "Test this out" , "jwttoken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1OTA3NTY4MjAsInN5c3RlbSI6ImNvbnRhY3QtZm9ybSIsImN1c3RvbWVyTnVtYmVyIjoiMDAwMTE5OTQ0MTYwIiwidXNlciI6ImNkdWZmeUB0ZmQuaWUifQ.fisOWBMqnbzzcNQpqO6Cmu6DEMjroaZYgTsAeEmR36A" }`
+		requestPayload := `{"email":"abc.xyz.com"}`
 		// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
 		rr := httptest.NewRecorder()
 		req, _ := http.NewRequest("POST", "/api/v1/event/confirmation", bytes.NewBuffer([]byte(requestPayload)))
@@ -147,8 +149,9 @@ func TestHandlers(t *testing.T) {
 	})
 
 	t.Run("BatchayloadHandler : should fail (not OK response)", func(t *testing.T) {
+		os.RemoveAll("semaphore.txt")
 		var STATUS int = 500
-		requestPayload := `{"email":"abc.xyz.com", "event":"test-this","subject": "test", "title": "Test title", "text" : "Test this out" , "jwttoken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1OTA3NTY4MjAsInN5c3RlbSI6ImNvbnRhY3QtZm9ybSIsImN1c3RvbWVyTnVtYmVyIjoiMDAwMTE5OTQ0MTYwIiwidXNlciI6ImNkdWZmeUB0ZmQuaWUifQ.fisOWBMqnbzzcNQpqO6Cmu6DEMjroaZYgTsAeEmR36A" }`
+		requestPayload := `{"email":"abc.xyz.com"}`
 		// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
 		rr := httptest.NewRecorder()
 		req, _ := http.NewRequest("POST", "/api/v1/batch", bytes.NewBuffer([]byte(requestPayload)))
@@ -169,4 +172,7 @@ func TestHandlers(t *testing.T) {
 			t.Errorf(fmt.Sprintf("Handler %s returned with incorrect status code - got (%d) wanted (%d)", "SendPayloadHandler", rr.Code, STATUS))
 		}
 	})
+
+	os.RemoveAll("temp")
+	os.Remove("semaphore.txt")
 }
